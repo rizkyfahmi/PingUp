@@ -1,27 +1,21 @@
 import { BadgeCheck, Heart, MessageCircle, Share2 } from "lucide-react";
 import moment from "moment";
 import React, { useState } from "react";
-import { dummyUserData } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 
 const PostCard = ({ post }) => {
-  const postWithHashtags = post.content?.replace(
+  const postWithHashtags = post.content.replace(
     /(#\w+)/g,
     '<span class="text-indigo-600">$1</span>'
   );
+  const [likes, setLikes] = useState(post.likes_count);
+  const currentUser = useSelector((state) => state.user.value);
 
-  // asumsi likes adalah array userId
-  const [likes, setLikes] = useState(post.likes_count || []);
-  const currentUser = dummyUserData;
+  const handleLike = async () => {};
+
   const navigate = useNavigate();
-
-  const handleLike = () => {
-    setLikes((prev) =>
-      prev.includes(currentUser._id)
-        ? prev.filter((id) => id !== currentUser._id)
-        : [...prev, currentUser._id]
-    );
-  };
 
   return (
     <div className="bg-white rounded-xl shadow p-4 space-y-4 w-full max-w-2xl">
@@ -63,9 +57,7 @@ const PostCard = ({ post }) => {
               key={index}
               alt=""
               className={`w-full object-cover rounded-lg ${
-                post.image_urls.length === 1
-                  ? "col-span-2 h-auto"
-                  : "h-48"
+                post.image_urls.length === 1 ? "col-span-2 h-auto" : "h-48"
               }`}
             />
           ))}
@@ -78,9 +70,7 @@ const PostCard = ({ post }) => {
           <Heart
             onClick={handleLike}
             className={`w-4 h-4 cursor-pointer ${
-              likes.includes(currentUser._id)
-                ? "text-red-500 fill-red-500"
-                : ""
+              likes.includes(currentUser._id) ? "text-red-500 fill-red-500" : ""
             }`}
           />
           <span>{likes.length}</span>

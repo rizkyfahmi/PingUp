@@ -11,15 +11,23 @@ import CreatePost from "./pages/CreatePost";
 import { useUser, useAuth } from "@clerk/clerk-react";
 import Layout from "./pages/Layout";
 import { Toaster } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { fetcUser } from "./features/user/userSlice";
 
 const App = () => {
   const { user } = useUser();
   const { getToken } = useAuth();
+
+  const dispatch = useDispatch();
   useEffect(() => {
-    if (user) {
-      getToken().then((token) => console.log(token));
-    }
-  }, [user]);
+    const fetchData = async () => {
+      if (user) {
+        const token = await getToken();
+        dispatch(fetcUser(token));
+      }
+    };
+    fetchData();
+  }, [user, getToken, dispatch]);
   return (
     <>
       <Toaster />
