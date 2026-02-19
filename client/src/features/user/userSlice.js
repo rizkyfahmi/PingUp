@@ -6,12 +6,16 @@ const initialState = {
   value: null,
 };
 
-export const fetcUser = createAsyncThunk("user/fetchUser", async (params) => {
-  const { data } = await api.get("/api/user/data", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return data.success ? data.user : null;
-});
+export const fetcUser = createAsyncThunk(
+  "user/fetchUser",
+  async (token) => {
+    const { data } = await api.get("/api/user/data", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    return data.success ? data.user : null;
+  }
+);
 
 export const updateUser = createAsyncThunk(
   "user/update",
@@ -19,12 +23,13 @@ export const updateUser = createAsyncThunk(
     const { data } = await api.post("/api/user/update", userData, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    if(data.success){
-        toast.success(data.message)
-        return data.user
+
+    if (data.success) {
+      toast.success(data.message);
+      return data.user;
     } else {
-        toast.error(data.message)
-        return null
+      toast.error(data.message);
+      return null;
     }
   }
 );
@@ -32,16 +37,16 @@ export const updateUser = createAsyncThunk(
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {
-
-  },
+  reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetcUser.fulfilled, (state, action) => {
-        state.value = action.payload
-    }).addCase(updateUser.fulfilled, (state, action) => {
-        state.value = action.payload
-    })
-  }
+    builder
+      .addCase(fetcUser.fulfilled, (state, action) => {
+        state.value = action.payload;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.value = action.payload;
+      });
+  },
 });
 
 export default userSlice.reducer;

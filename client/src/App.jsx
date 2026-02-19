@@ -15,10 +15,10 @@ import { useDispatch } from "react-redux";
 import { fetcUser } from "./features/user/userSlice";
 
 const App = () => {
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const { getToken } = useAuth();
-
   const dispatch = useDispatch();
+
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
@@ -28,6 +28,9 @@ const App = () => {
     };
     fetchData();
   }, [user, getToken, dispatch]);
+
+  if (!isLoaded) return <div>Loading...</div>;
+
   return (
     <>
       <Toaster />

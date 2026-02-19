@@ -11,44 +11,40 @@ import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 
 const Profile = () => {
-
-const currentUser = useSelector((state) => state.user.value)
-
+  const currentUser = useSelector((state) => state.user.value);
   const { getToken } = useAuth();
   const { profileId } = useParams();
+
   const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);
   const [activeTab, setActiveTab] = useState("posts");
   const [showEdit, setShowEdit] = useState(false);
 
-  const fetchUser = async (profileId) => {
+  const fetchUser = async () => {
+    if (!currentUser) return;
+
     const token = await getToken();
+
     try {
-      const { data } = await api.post(
-        `/api/user/profiles`,
-        { profileId },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      // backend kamu cuma punya endpoint ini
+      const { data } = await api.get("/api/user/data", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
       if (data.success) {
-        setUser(data.profle);
-        setPosts(data.posts)
+        setUser(data.user);
+        setPosts(data.posts || []);
       } else {
-        toast.error(data.message)
+        toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.response?.data?.message || error.message);
     }
   };
 
   useEffect(() => {
-    if(profileId) {
-      fetchUser(profileId)
-    } else {
-      fetchUser(currentUser._id)
-    }
-  }, [profileId, currentUser]);
+    fetchUser();
+  }, [currentUser]);
 
   return user ? (
     <div className="relative h-full overflow-y-scroll bg-gray-50 p-6">
