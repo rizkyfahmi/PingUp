@@ -4,7 +4,7 @@ import "dotenv/config";
 import connectDB from "./configs/db.js";
 import { inngest, functions } from "./inngest/index.js";
 import { serve } from "inngest/express";
-import { clerkMiddleware } from "@clerkexpress";
+import { clerkMiddleware } from "@clerk/express";
 import userRouter from "./routes/userRoutes.js";
 import postRouter from "./routes/postRoutes.js";
 import storyRouter from "./routes/storyRoutes.js";

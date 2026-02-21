@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, Image } from "lucide-react";
+import { Image, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 
@@ -9,6 +9,7 @@ const CreatePost = () => {
   const [loading] = useState(false);
 
   const user = useSelector((state) => state.user.value);
+
   const handleSubmit = async () => {};
 
   return (
@@ -95,7 +96,7 @@ const CreatePost = () => {
                 toast.promise(handleSubmit(), {
                   loading: "uploading...",
                   success: <p>Post Added</p>,
-                  error : <p>Post Not Added </p>
+                  error: <p>Post Not Added </p>,
                 })
               }
               className="text-sm bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 active:scale-95 transition text-white font-medium px-8 py-2 rounded-md cursor-pointer"

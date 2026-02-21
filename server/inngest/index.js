@@ -1,9 +1,8 @@
-import Story from "../models/Story.js";
 import User from "../models/User.js";
 import fs from "fs";
 import imagekit from "../configs/imagekit.js";
-import { inngest } from "../inngest/index.js";
-// Create a client to send and receive events
+import { Inngest } from "inngest";// Create a client to send and receive events
+import Story from "../models/Story.js";
 export const inngest = new Inngest({ id: "pingup-app" });
 
 // Inngest Function to save user data to a database
