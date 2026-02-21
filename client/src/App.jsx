@@ -15,21 +15,14 @@ import { useDispatch } from "react-redux";
 import { fetcUser } from "./features/user/userSlice";
 
 const App = () => {
-  const { user, isLoaded } = useUser();
-  const { getToken } = useAuth();
-  const dispatch = useDispatch();
+  const {user} = useUser()
+  const {getToken } = useAuth()
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (user) {
-        const token = await getToken();
-        dispatch(fetcUser(token));
-      }
-    };
-    fetchData();
-  }, [user, getToken, dispatch]);
-
-  if (!isLoaded) return <div>Loading...</div>;
+  useEffect(()=>{
+    if(user){
+      getToken().then((token)=>console.log(token))
+    }
+  },[user])
 
   return (
     <>
