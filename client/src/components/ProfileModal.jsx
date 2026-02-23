@@ -22,7 +22,8 @@ const ProfileModal = ({ setShowEdit }) => {
 
   const handleSaveProfile = async (e) => {
     e.preventDefault();
-    try {
+
+    const promise = (async () => {
       const userData = new FormData();
       const {
         full_name,
@@ -41,12 +42,18 @@ const ProfileModal = ({ setShowEdit }) => {
       cover_photo && userData.append("cover", cover_photo);
 
       const token = await getToken();
-      dispatch(updateUser({ userData, token }));
 
-      setShowEdit(false);
-    } catch (error) {
-      toast.error(error.message);
-    }
+      return dispatch(updateUser({ userData, token }));
+    })();
+
+    toast.promise(promise, {
+      loading: "Saving...",
+      success: "Profile updated",
+      error: "Failed update profile",
+    });
+
+    await promise;
+    setShowEdit(false);
   };
 
   return (
@@ -57,10 +64,7 @@ const ProfileModal = ({ setShowEdit }) => {
             Edit Profile
           </h1>
 
-          <form
-            className="space-y-4"
-            onSubmit={(e) => toast.promise(handleSaveProfile(e), {loading: 'Saving...'})}
-          >
+          <form className="space-y-4" onSubmit={handleSaveProfile}>
             {/* Profile Picture */}
             <div>
               <label

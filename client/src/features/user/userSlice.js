@@ -23,6 +23,7 @@ export const updateUser = createAsyncThunk(
     const { data } = await api.post("/api/user/update", userData, {
       headers: { Authorization: `Bearer ${token}` },
     });
+    console.log("TOKEN:", token);
 
     if (data.success) {
       toast.success(data.message);

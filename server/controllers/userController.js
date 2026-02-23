@@ -3,6 +3,7 @@ import fs from "fs";
 import imagekit from "../configs/imagekit.js";
 import Connection from "../models/Connection.js";
 import { inngest } from "../inngest/index.js";
+import Post from "../models/Post.js";
 
 /* ===============================
    GET USER DATA
@@ -28,35 +29,38 @@ export const getUserData = async (req, res) => {
 // Update User Data
 export const updateUserData = async (req, res) => {
   try {
-    const { userId } = req.auth();
+    const { userId } = req.auth(); // FIXED
+
+    if (!userId) {
+      return res.json({
+        success: false,
+        message: "Your account cannot be authenticated.",
+      });
+    }
+
     let { username, bio, location, full_name } = req.body;
 
     const tempUser = await User.findById(userId);
+
+    if (!tempUser) {
+      return res.json({ success: false, message: "User not found" });
+    }
 
     !username && (username = tempUser.username);
 
     if (tempUser.username !== username) {
       const user = await User.findOne({ username });
-      if (user) {
-        // we will not change the username if it is already taken
-        username = tempUser.username;
-      }
+      if (user) username = tempUser.username;
     }
 
-    const updatedData = {
-      username,
-      bio,
-      location,
-      full_name,
-    };
+    const updatedData = { username, bio, location, full_name };
 
-    const profile = req.files.profile && req.files.profile[0];
-    const cover = req.files.cover && req.files.cover[0];
+    const profile = req.files?.profile?.[0];
+    const cover = req.files?.cover?.[0];
 
     if (profile) {
-      const buffer = fs.readFileSync(profile.path);
       const response = await imagekit.upload({
-        file: buffer,
+        file: profile.buffer,
         fileName: profile.originalname,
       });
 
@@ -73,9 +77,8 @@ export const updateUserData = async (req, res) => {
     }
 
     if (cover) {
-      const buffer = fs.readFileSync(cover.path);
       const response = await imagekit.upload({
-        file: buffer,
+        file: cover.buffer, // FIXED
         fileName: cover.originalname,
       });
 
